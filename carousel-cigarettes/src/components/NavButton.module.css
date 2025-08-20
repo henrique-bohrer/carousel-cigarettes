@@ -1,0 +1,18 @@
+/* Estilos para o NavButton */
+.navButton {
+  background: none;
+  border: none;
+  padding: 1rem; /* p-4 */
+  cursor: pointer;
+  align-self: center;
+}
+
+.navButton i {
+  font-size: 3rem; /* text-5xl */
+  color: #6d28d9; /* text-violet-600 */
+  transition: color 0.2s ease-in-out;
+}
+
+.navButton:hover i {
+  color: #8b5cf6; /* hover:text-violet-500 */
+}
