@@ -5,7 +5,7 @@ const CigarroCard = ({ cigarro }) => {
 
   return (
     <div className="w-80 rounded-lg bg-white shadow-lg overflow-hidden transform hover:scale-105 transition-transform duration-300 ease-in-out">
-      <img className="w-full h-48 object-cover" src={cigarro.imageUrl} alt={cigarro.marca} />
+      <img className="w-full h-80 object-cover" src={cigarro.imageUrl} alt={cigarro.marca} />
       <div className="p-4">
         <h2 className="text-2xl font-bold text-gray-800">{cigarro.marca}</h2>
         <p className="text-sm text-gray-600 mb-2">{cigarro.tipo}</p>

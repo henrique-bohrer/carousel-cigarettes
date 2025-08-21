@@ -24,7 +24,7 @@ function App() {
       <div className="flex items-center justify-center space-x-6">
         <NavButton onClick={goToPrevious} direction="prev" />
 
-        <div className="w-80 h-96">
+        <div className="w-80 min-h-96">
           <CigarroCard cigarro={CIGARROS[currentIndex]} />
         </div>
 
