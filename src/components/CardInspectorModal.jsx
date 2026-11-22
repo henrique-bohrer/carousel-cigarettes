@@ -224,6 +224,30 @@ const CardInspectorModal = ({
             “{card.flavorText}”
           </p>
 
+          {/* Ficha Técnica: Motor, Câmbio e Tempo Médio de Troca */}
+          {card.engine && (
+            <div className="grid grid-cols-3 gap-2 text-center bg-slate-950/60 border border-slate-800 rounded-xl p-2.5">
+              <div>
+                <div className="text-[9px] font-mono uppercase text-slate-500">Motor</div>
+                <div className="text-[11px] font-bold text-slate-200 truncate" title={card.engine.label}>
+                  {card.engine.label}
+                </div>
+              </div>
+              <div className="border-x border-slate-800 px-1">
+                <div className="text-[9px] font-mono uppercase text-slate-500">Câmbio</div>
+                <div className="text-[11px] font-bold text-cyan-300 truncate" title={card.engine.transmission}>
+                  {card.engine.transmission || `${card.engine.gears} Marchas`}
+                </div>
+              </div>
+              <div>
+                <div className="text-[9px] font-mono uppercase text-slate-500">Troca Média</div>
+                <div className="text-xs font-mono font-black text-amber-300">
+                  ~{card.engine.shiftMs} ms
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Seletor de Edições para cartas Raras+ */}
           <div className="bg-slate-950/75 border border-slate-800 rounded-2xl p-4 space-y-3">
             <div className="flex items-center justify-between">

@@ -129,7 +129,7 @@ const TcgCard = ({
             />
           </div>
           <div className="flex justify-between text-[8px] font-mono text-slate-400 mt-1">
-            <span>{telemetry.shifting ? '⚡ TROCANDO MARCHA!' : 'ACELERANDO...'}</span>
+            <span>{telemetry.shifting ? `⚡ TROCA (~${card.engine?.shiftMs || 120} ms)` : 'ACELERANDO...'}</span>
             <span>
               {telemetry.gear}/{telemetry.maxGears} MARCHAS
             </span>

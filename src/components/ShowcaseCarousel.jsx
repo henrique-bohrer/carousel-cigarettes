@@ -150,6 +150,28 @@ const ShowcaseCarousel = ({ ownedKeys }) => {
             <p className="text-xs text-slate-400 mt-2 italic leading-relaxed">
               “{currentCard.flavorText}”
             </p>
+            {currentCard.engine && (
+              <div className="mt-3 grid grid-cols-3 gap-2 text-center bg-slate-950/70 border border-slate-800 rounded-xl p-2">
+                <div>
+                  <div className="text-[9px] font-mono uppercase text-slate-500">Motor</div>
+                  <div className="text-[10px] font-bold text-slate-200 truncate" title={currentCard.engine.label}>
+                    {currentCard.engine.label}
+                  </div>
+                </div>
+                <div className="border-x border-slate-800 px-1">
+                  <div className="text-[9px] font-mono uppercase text-slate-500">Câmbio</div>
+                  <div className="text-[10px] font-bold text-cyan-300 truncate" title={currentCard.engine.transmission}>
+                    {currentCard.engine.transmission || `${currentCard.engine.gears}M`}
+                  </div>
+                </div>
+                <div>
+                  <div className="text-[9px] font-mono uppercase text-slate-500">Troca Média</div>
+                  <div className="text-[11px] font-mono font-black text-amber-300">
+                    ~{currentCard.engine.shiftMs} ms
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Alternador de Edição (Normal / Foil / Full Art) */}
