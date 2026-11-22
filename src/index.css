@@ -1,5 +1,130 @@
-/** src/index.css **/
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  body {
+    background-color: #070a13;
+    background-image:
+      radial-gradient(ellipse 80% 50% at 50% -15%, rgba(245, 158, 11, 0.12), transparent),
+      radial-gradient(ellipse 60% 40% at 85% 90%, rgba(139, 92, 246, 0.1), transparent),
+      radial-gradient(ellipse 50% 40% at 10% 80%, rgba(14, 165, 233, 0.08), transparent);
+    background-attachment: fixed;
+  }
+}
+
+/* 3D Perspective & Card Flip */
+.perspective-1200 {
+  perspective: 1200px;
+}
+
+.preserve-3d {
+  transform-style: preserve-3d;
+}
+
+.backface-hidden {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.rotate-y-180 {
+  transform: rotateY(180deg);
+}
+
+/* Holographic Foil Overlay — reacts to CSS variables --mx, --my, --angle */
+.tcg-foil-sheen {
+  background-image:
+    linear-gradient(
+      var(--angle, 115deg),
+      transparent 15%,
+      rgba(255, 0, 128, 0.32) 32%,
+      rgba(255, 215, 0, 0.36) 44%,
+      rgba(0, 255, 224, 0.36) 56%,
+      rgba(130, 80, 255, 0.34) 68%,
+      transparent 85%
+    ),
+    radial-gradient(
+      circle at var(--mx, 50%) var(--my, 50%),
+      rgba(255, 255, 255, 0.45) 0%,
+      rgba(255, 255, 255, 0.1) 30%,
+      transparent 62%
+    );
+  background-size: 220% 220%, 100% 100%;
+  background-position: var(--mx, 50%) var(--my, 50%), center;
+  mix-blend-mode: color-dodge;
+}
+
+/* Fine diagonal foil micro-lines */
+.tcg-foil-grain {
+  background-image: repeating-linear-gradient(
+    -45deg,
+    rgba(255, 255, 255, 0.08) 0px,
+    rgba(255, 255, 255, 0.08) 1px,
+    transparent 1px,
+    transparent 4px
+  );
+  mix-blend-mode: overlay;
+}
+
+/* Full Art Prismatic Rays + Gold Sparkle Glare */
+.tcg-fullart-sheen {
+  background-image:
+    conic-gradient(
+      from var(--angle, 120deg) at var(--mx, 50%) var(--my, 50%),
+      rgba(255, 215, 0, 0.35),
+      rgba(255, 70, 160, 0.32),
+      rgba(56, 189, 248, 0.35),
+      rgba(167, 139, 250, 0.32),
+      rgba(52, 211, 153, 0.3),
+      rgba(255, 215, 0, 0.35)
+    ),
+    radial-gradient(
+      circle at var(--mx, 50%) var(--my, 50%),
+      rgba(255, 255, 255, 0.55) 0%,
+      rgba(255, 236, 179, 0.18) 28%,
+      transparent 60%
+    );
+  mix-blend-mode: color-dodge;
+}
+
+.tcg-fullart-sparkles {
+  background-image:
+    radial-gradient(2px 2px at 18% 24%, rgba(255, 255, 255, 0.9), transparent),
+    radial-gradient(1.5px 1.5px at 78% 18%, rgba(255, 230, 150, 0.95), transparent),
+    radial-gradient(2px 2px at 65% 48%, rgba(255, 255, 255, 0.85), transparent),
+    radial-gradient(1.5px 1.5px at 26% 68%, rgba(165, 243, 252, 0.9), transparent),
+    radial-gradient(2px 2px at 84% 72%, rgba(253, 186, 116, 0.9), transparent),
+    radial-gradient(1.5px 1.5px at 45% 32%, rgba(244, 114, 182, 0.9), transparent),
+    radial-gradient(1.5px 1.5px at 52% 82%, rgba(255, 255, 255, 0.85), transparent);
+  mix-blend-mode: screen;
+}
+
+/* Metallic Booster Pack Crimped Edges */
+.pack-crimp-top {
+  background-image: repeating-linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.18) 0px,
+    rgba(255, 255, 255, 0.18) 2px,
+    rgba(0, 0, 0, 0.35) 2px,
+    rgba(0, 0, 0, 0.35) 5px
+  );
+}
+
+/* Custom sleek scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.6);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(100, 116, 139, 0.5);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(148, 163, 184, 0.7);
+}
