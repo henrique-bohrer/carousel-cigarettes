@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { CARDS } from '../data/cards.js';
+import { CATEGORIES, CATEGORY_ORDER } from '../data/categories.js';
 import { DISPLAY_THEMES, RARITIES, RARITY_ORDER, VARIANTS } from '../data/rarities.js';
 import { calculateCardValue, formatCurrency } from '../utils/packEngine.js';
 import soundEngine from '../utils/soundEngine.js';
@@ -27,6 +28,7 @@ const CollectionView = ({
   onOpenTradeUp,
   onGoToPacks,
 }) => {
+  const [categoryFilter, setCategoryFilter] = useState('Todas');
   const [rarityFilter, setRarityFilter] = useState('Todas');
   const [variantFilter, setVariantFilter] = useState('Todas');
   const [sortBy, setSortBy] = useState('value-desc');
@@ -108,9 +110,24 @@ const CollectionView = ({
     };
   }, [collection, groupedEntries]);
 
+  // Progresso de carros únicos desbloqueados por categoria
+  const categoryProgress = useMemo(() => {
+    const ownedCardIds = new Set(collection.map((i) => i.cardId));
+    return CATEGORY_ORDER.map((catId) => {
+      const catCards = CARDS.filter((c) => c.category === catId);
+      const owned = catCards.filter((c) => ownedCardIds.has(c.id)).length;
+      return {
+        ...CATEGORIES[catId],
+        owned,
+        total: catCards.length,
+      };
+    });
+  }, [collection]);
+
   // Filtragem e Ordenação
   const filteredEntries = useMemo(() => {
     return groupedEntries
+      .filter((e) => (categoryFilter === 'Todas' ? true : e.card.category === categoryFilter))
       .filter((e) => (rarityFilter === 'Todas' ? true : e.card.raridade === rarityFilter))
       .filter((e) => (variantFilter === 'Todas' ? true : e.variant === variantFilter))
       .sort((a, b) => {
@@ -122,7 +139,7 @@ const CollectionView = ({
         if (sortBy === 'recent') return b.latestPulledAt - a.latestPulledAt;
         return a.card.number.localeCompare(b.card.number);
       });
-  }, [groupedEntries, rarityFilter, variantFilter, sortBy]);
+  }, [groupedEntries, categoryFilter, rarityFilter, variantFilter, sortBy]);
 
   if (collection.length === 0) {
     return (
@@ -303,6 +320,62 @@ const CollectionView = ({
               : 'Sem Duplicatas'}
           </button>
         </div>
+      </div>
+
+      {/* Progresso por Categoria (clique para filtrar diretamente) */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5">
+        <button
+          type="button"
+          onClick={() => {
+            soundEngine.playUiClick();
+            setCategoryFilter('Todas');
+          }}
+          className={`p-3 rounded-2xl border text-left transition-all ${
+            categoryFilter === 'Todas'
+              ? 'bg-amber-400/15 border-amber-400 text-white'
+              : 'bg-slate-900/75 border-slate-800 text-slate-300 hover:border-slate-600'
+          }`}
+        >
+          <div className="text-xs font-bold">Todas</div>
+          <div className="text-[10px] font-mono text-amber-300 mt-1">
+            {categoryProgress.reduce((s, c) => s + c.owned, 0)} / {CARDS.length} carros
+          </div>
+        </button>
+
+        {categoryProgress.map((cat) => {
+          const active = categoryFilter === cat.id;
+          const pct = Math.round((cat.owned / Math.max(1, cat.total)) * 100);
+          return (
+            <button
+              key={cat.id}
+              type="button"
+              onClick={() => {
+                soundEngine.playUiClick();
+                setCategoryFilter(cat.id);
+              }}
+              className={`p-3 rounded-2xl border text-left transition-all ${
+                active
+                  ? 'bg-slate-800 border-amber-400 ring-1 ring-amber-400/40 text-white'
+                  : 'bg-slate-900/75 border-slate-800 text-slate-300 hover:border-slate-600'
+              }`}
+            >
+              <div className="flex items-center justify-between gap-1 text-xs font-bold">
+                <span className="truncate">
+                  {cat.icon} {cat.name}
+                </span>
+              </div>
+              <div className="flex items-center justify-between text-[10px] font-mono text-slate-400 mt-1">
+                <span>
+                  {cat.owned}/{cat.total}
+                </span>
+                <span className="text-amber-300">{pct}%</span>
+              </div>
+              <div className="h-1 w-full bg-slate-800 rounded-full overflow-hidden mt-1.5">
+                <div className="h-full bg-amber-400" style={{ width: `${pct}%` }} />
+              </div>
+            </button>
+          );
+        })}
       </div>
 
       {/* Barra de Filtros & Ordenação */}

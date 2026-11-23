@@ -115,6 +115,7 @@ function App() {
     let foilCount = 0;
     let fullArtCount = 0;
     let mysticCount = 0;
+    let gt3Count = 0;
     let f1Count = 0;
 
     for (const item of collection) {
@@ -124,10 +125,11 @@ function App() {
       if (item.variant === 'foil') foilCount += 1;
       if (item.variant === 'full-art') fullArtCount += 1;
       if (card.raridade === 'Místico') mysticCount += 1;
+      if (card.category === 'gt3') gt3Count += 1;
       if (card.raridade === 'F1 Histórica') f1Count += 1;
     }
 
-    return { collectionValue, foilCount, fullArtCount, mysticCount, f1Count };
+    return { collectionValue, foilCount, fullArtCount, mysticCount, gt3Count, f1Count };
   }, [collection]);
 
   const missionContext = useMemo(
@@ -137,6 +139,7 @@ function App() {
       foilCount: albumMetrics.foilCount,
       fullArtCount: albumMetrics.fullArtCount,
       mysticCount: albumMetrics.mysticCount,
+      gt3Count: albumMetrics.gt3Count,
       f1Count: albumMetrics.f1Count,
       stats,
     }),
@@ -433,25 +436,23 @@ function App() {
 
               <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
                 <div className="max-w-2xl space-y-3">
-                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-500/20 border border-amber-400/45 text-amber-300 text-[11px] font-mono font-bold uppercase tracking-wider">
-                    <span>♛</span>
-                    <span>Nova Categoria Suprema: F1 Histórica (MP4/4, F2004, Lotus 97T)</span>
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-500/20 border border-sky-400/45 text-sky-200 text-[11px] font-mono font-bold uppercase tracking-wider">
+                    <span>🏁</span>
+                    <span>5 Categorias com Ranking Próprio • Nova Categoria Corrida GT3!</span>
                   </div>
                   <h1 className="font-display font-black text-3xl sm:text-5xl text-white leading-tight">
-                    Monte sua Garagem. Colecione{' '}
-                    <span className="bg-gradient-to-r from-red-400 via-amber-300 to-cyan-300 bg-clip-text text-transparent">
-                      JDM, Hypercars & F1
+                    Pacotes por Categoria:{' '}
+                    <span className="bg-gradient-to-r from-sky-300 via-amber-300 to-red-400 bg-clip-text text-transparent">
+                      Street, JDM, GT3, Hyper & F1
                     </span>
                     .
                   </h1>
                   <p className="text-sm sm:text-base text-slate-300 leading-relaxed">
-                    Abra pacotes de <strong className="text-emerald-300">Clássicos</strong>,{' '}
-                    <strong className="text-sky-300">Europa GP</strong>,{' '}
-                    <strong className="text-fuchsia-300">Tokyo Midnight JDM</strong> e o{' '}
-                    <strong className="text-amber-300">Paddock F1 Vault</strong> — com edições{' '}
-                    <strong className="text-cyan-300">Foil (2.2×)</strong>,{' '}
-                    <strong className="text-amber-300">Full Art (3.8×)</strong> e{' '}
-                    <strong className="text-rose-300">PSA 10 (2.25×)</strong>!
+                    Cada categoria tem seu <strong className="text-white">pacote exclusivo</strong> e ranking completo do{' '}
+                    <strong className="text-emerald-300">Comum</strong> ao <strong className="text-rose-300">Místico</strong> —
+                    incluindo a nova <strong className="text-sky-300">Corrida GT3</strong> liderada pela{' '}
+                    <strong className="text-amber-300">BMW M3 GTR Most Wanted</strong> e o Paddock{' '}
+                    <strong className="text-red-300">♛ F1 Histórica</strong>!
                   </p>
                 </div>
 
@@ -509,7 +510,7 @@ function App() {
                 </button>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-8 justify-items-center pt-2">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 justify-items-center pt-2">
                 {PACKS.map((pack) => (
                   <BoosterPack
                     key={pack.id}

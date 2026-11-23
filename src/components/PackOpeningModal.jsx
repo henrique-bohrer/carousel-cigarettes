@@ -1,7 +1,8 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { RARITIES, VARIANTS } from '../data/rarities.js';
 import { formatCurrency } from '../utils/packEngine.js';
 import soundEngine from '../utils/soundEngine.js';
+import RarityRevealOverlay, { getRevealConfig } from './RarityRevealOverlay.jsx';
 import TcgCard from './TcgCard.jsx';
 
 const PackOpeningModal = ({
@@ -16,11 +17,26 @@ const PackOpeningModal = ({
   const [tearProgress, setTearProgress] = useState(0);
   const [currentIdx, setCurrentIdx] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
+  const [revealPhase, setRevealPhase] = useState('idle'); // 'idle' | 'buildup' | 'burst'
   const tearStripRef = useRef(null);
   const isDraggingRef = useRef(false);
+  const buildupTimerRef = useRef(null);
+
+  useEffect(() => {
+    return () => {
+      if (buildupTimerRef.current) clearTimeout(buildupTimerRef.current);
+    };
+  }, []);
 
   const currentPull = pulls[currentIdx];
   const isNewKey = (pull) => !previousOwnedKeys.has(`${pull.cardId}::${pull.variant}`);
+
+  const clearBuildupTimer = () => {
+    if (buildupTimerRef.current) {
+      clearTimeout(buildupTimerRef.current);
+      buildupTimerRef.current = null;
+    }
+  };
 
   const triggerTearComplete = () => {
     if (stage !== 'sealed') return;
@@ -31,6 +47,7 @@ const PackOpeningModal = ({
       setStage('revealing');
       setCurrentIdx(0);
       setIsFlipped(false);
+      setRevealPhase('idle');
     }, 620);
   };
 
@@ -66,6 +83,8 @@ const PackOpeningModal = ({
   };
 
   const goToSummary = (fromSealed = false) => {
+    clearBuildupTimer();
+    setRevealPhase('idle');
     setStage('summary');
     const topPull = pulls[pulls.length - 1];
     if (fromSealed) {
@@ -81,18 +100,36 @@ const PackOpeningModal = ({
   };
 
   const handleCardAction = () => {
+    if (revealPhase === 'buildup') return; // aguarda a tensão cinematográfica explodir
+
     if (!isFlipped) {
-      setIsFlipped(true);
-      soundEngine.playCardFlip();
-      if (currentPull) {
+      if (!currentPull) return;
+      const cfg = getRevealConfig(currentPull.card.raridade);
+
+      if (cfg.hasCinematic) {
+        setRevealPhase('buildup');
+        soundEngine.playRevealBuildup(currentPull.card.raridade);
+        clearBuildupTimer();
+        buildupTimerRef.current = setTimeout(() => {
+          setIsFlipped(true);
+          setRevealPhase('burst');
+          soundEngine.playCardFlip();
+          soundEngine.playRarityReveal(currentPull.card.raridade, currentPull.variant);
+        }, cfg.buildupMs);
+      } else {
+        setIsFlipped(true);
+        soundEngine.playCardFlip();
         setTimeout(() => {
           soundEngine.playRarityReveal(currentPull.card.raridade, currentPull.variant);
         }, 170);
       }
       return;
     }
+
     if (currentIdx < pulls.length - 1) {
+      clearBuildupTimer();
       soundEngine.playCardSlide();
+      setRevealPhase('idle');
       setIsFlipped(false);
       setTimeout(() => {
         setCurrentIdx((idx) => idx + 1);
@@ -229,9 +266,9 @@ const PackOpeningModal = ({
 
         {/* ======================== STAGE 3: REVELAÇÃO CARTA POR CARTA ======================== */}
         {stage === 'revealing' && currentPull && (
-          <div className="flex flex-col items-center w-full animate-pop-in">
+          <div className="flex flex-col items-center w-full animate-pop-in relative z-40">
             {/* Barra de progresso das 5 cartas */}
-            <div className="flex items-center gap-2 mb-4">
+            <div className="flex items-center gap-2 mb-4 relative z-40">
               {pulls.map((p, i) => {
                 const r = RARITIES[p.card.raridade];
                 const revealed = i < currentIdx || (i === currentIdx && isFlipped);
@@ -247,12 +284,16 @@ const PackOpeningModal = ({
             </div>
 
             {isGodPack && (
-              <div className="mb-3 px-4 py-1 rounded-full bg-gradient-to-r from-amber-400 via-rose-500 to-violet-500 text-white text-xs font-black tracking-[0.2em] uppercase shadow-lg animate-pulse">
+              <div className="mb-3 px-4 py-1 rounded-full bg-gradient-to-r from-amber-400 via-rose-500 to-violet-500 text-white text-xs font-black tracking-[0.2em] uppercase shadow-lg animate-pulse relative z-40">
                 ✦ GOD PACK! TODAS AS CARTAS SÃO ESPECIAIS ✦
               </div>
             )}
 
-            <div className="text-xs font-mono text-slate-400 mb-3">
+            <div
+              className={`text-xs font-mono text-slate-400 mb-3 relative z-40 transition-opacity duration-200 ${
+                revealPhase !== 'idle' ? 'opacity-0' : 'opacity-100'
+              }`}
+            >
               Carta {currentIdx + 1} de {pulls.length}
               {!isFlipped && isSpecialPull && (
                 <span className="ml-2 text-amber-300 font-bold animate-pulse">
@@ -261,13 +302,26 @@ const PackOpeningModal = ({
               )}
             </div>
 
-            {/* Carta com Flip 3D */}
+            {/* Carta com Flip 3D + Luzes girando em LOOP atrás (z-0) + Efeitos/Banner na frente (z-50) */}
             <div
               onClick={handleCardAction}
-              className="perspective-1200 cursor-pointer my-1"
+              className={`perspective-1200 cursor-pointer my-1 relative z-40 ${
+                revealPhase === 'buildup'
+                  ? 'animate-cr-shake'
+                  : revealPhase === 'burst'
+                    ? 'animate-cr-impact'
+                    : ''
+              }`}
             >
+              <RarityRevealOverlay
+                key={`${currentPull.instanceId}-${revealPhase}-back`}
+                rarity={currentPull.card.raridade}
+                variant={currentPull.variant}
+                phase={revealPhase}
+                layer="back"
+              />
               <div
-                className={`relative w-72 sm:w-80 h-[27rem] sm:h-[29.5rem] preserve-3d transition-transform duration-700 ease-out ${
+                className={`relative z-20 w-72 sm:w-80 h-[29rem] sm:h-[31rem] preserve-3d transition-transform duration-700 ease-out ${
                   isFlipped ? 'rotate-y-180' : ''
                 }`}
               >
@@ -311,6 +365,13 @@ const PackOpeningModal = ({
                   />
                 </div>
               </div>
+              <RarityRevealOverlay
+                key={`${currentPull.instanceId}-${revealPhase}-front`}
+                rarity={currentPull.card.raridade}
+                variant={currentPull.variant}
+                phase={revealPhase}
+                layer="front"
+              />
             </div>
 
             {/* Banner de Destaque quando virada */}

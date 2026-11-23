@@ -3,7 +3,7 @@
 // - pithumbsize=500 usa tamanho padrão pré-cacheado no CDN da Wikimedia (evita HTTP 429)
 // - Cache local com validação e fallback sequencial seguro
 
-const PHOTO_CACHE_KEY = 'apex-tcg-wiki-photos-v2';
+const PHOTO_CACHE_KEY = 'apex-tcg-wiki-photos-v3';
 const CACHE_TTL_MS = 7 * 24 * 60 * 60 * 1000; // 7 dias
 
 export function loadCachedPhotos() {

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { RARITIES, VARIANTS } from '../data/rarities.js';
 import { calculateCardValue, formatCurrency, generateWonderPickTables } from '../utils/packEngine.js';
 import soundEngine from '../utils/soundEngine.js';
+import RarityRevealOverlay, { getRevealConfig } from './RarityRevealOverlay.jsx';
 import TcgCard from './TcgCard.jsx';
 
 const WonderPickView = ({ balance, onCompleteWonderPick }) => {
@@ -176,7 +177,7 @@ const WonderPickView = ({ balance, onCompleteWonderPick }) => {
       {/* Modal Interativo de Embaralhamento & Escolha */}
       {activeSession && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/92 backdrop-blur-xl p-4 overflow-y-auto">
-          <div className="w-full max-w-5xl flex flex-col items-center text-center animate-pop-in">
+          <div className="relative z-40 w-full max-w-5xl flex flex-col items-center text-center animate-pop-in">
             <span className={`text-[10px] font-black px-3 py-1 rounded-full border ${activeSession.table.badgeStyle}`}>
               WONDER PICK • {activeSession.table.title}
             </span>
@@ -239,12 +240,30 @@ const WonderPickView = ({ balance, onCompleteWonderPick }) => {
 
                       {/* Frente Revelada */}
                       <div className="absolute inset-0 backface-hidden rotate-y-180">
-                        <TcgCard
-                          card={slot.card}
-                          variant={slot.variant}
-                          size="sm"
-                          interactive={false}
-                        />
+                        {isRevealed && isPicked && getRevealConfig(slot.card.raridade).hasCinematic && (
+                          <RarityRevealOverlay
+                            rarity={slot.card.raridade}
+                            variant={slot.variant}
+                            phase="burst"
+                            layer="back"
+                          />
+                        )}
+                        <div className="relative z-20">
+                          <TcgCard
+                            card={slot.card}
+                            variant={slot.variant}
+                            size="sm"
+                            interactive={false}
+                          />
+                        </div>
+                        {isRevealed && isPicked && getRevealConfig(slot.card.raridade).hasCinematic && (
+                          <RarityRevealOverlay
+                            rarity={slot.card.raridade}
+                            variant={slot.variant}
+                            phase="burst"
+                            layer="front"
+                          />
+                        )}
                         {isPicked && (
                           <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 bg-amber-400 text-slate-950 text-[10px] font-black uppercase px-3 py-0.5 rounded-full shadow-lg whitespace-nowrap">
                             ★ SUA CARTA!

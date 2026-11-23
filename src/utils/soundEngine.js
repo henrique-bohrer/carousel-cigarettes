@@ -614,6 +614,56 @@ class SoundEngine {
       this._playTone({ freq, type: 'triangle', startTime: now + i * 0.07, duration: 0.55, gain: 0.14, attack: 0.008 });
     });
   }
+
+  /**
+   * Som de tensão pré-revelação (estilo Clash Royale!) antes de a carta explodir na tela:
+   * - Épico: descarga elétrica roxa subindo
+   * - Lendário: riser arco-íris brilhante
+   * - Místico: vórtice grave + tensão cósmica
+   * - F1 Histórica: os 5 icônicos bips das luzes vermelhas de largada da Fórmula 1!
+   */
+  playRevealBuildup(rarity = 'Épico') {
+    const ctx = this._ensureContext();
+    if (!ctx) return;
+    const now = ctx.currentTime;
+
+    if (rarity === 'Épico') {
+      this._playTone({ freq: 240, endFreq: 780, type: 'sawtooth', startTime: now, duration: 0.28, gain: 0.08, attack: 0.02 });
+      this._playNoiseBurst({ startTime: now, duration: 0.25, filterType: 'bandpass', freqStart: 1800, freqEnd: 5200, q: 3.0, gain: 0.12 });
+      return;
+    }
+
+    if (rarity === 'Lendário') {
+      this._playTone({ freq: 261.63, endFreq: 1046.5, type: 'triangle', startTime: now, duration: 0.44, gain: 0.12, attack: 0.03 });
+      [523.25, 659.25, 783.99, 987.77].forEach((f, idx) => {
+        this._playTone({ freq: f, type: 'sine', startTime: now + idx * 0.09, duration: 0.18, gain: 0.09, attack: 0.01 });
+      });
+      return;
+    }
+
+    if (rarity === 'Místico') {
+      this._playTone({ freq: 85, endFreq: 210, type: 'sawtooth', startTime: now, duration: 0.58, gain: 0.11, attack: 0.04 });
+      this._playTone({ freq: 330, endFreq: 1320, type: 'triangle', startTime: now, duration: 0.58, gain: 0.1, attack: 0.05 });
+      this._playNoiseBurst({ startTime: now, duration: 0.55, filterType: 'bandpass', freqStart: 400, freqEnd: 4600, q: 2.2, gain: 0.15 });
+      return;
+    }
+
+    if (rarity === 'F1 Histórica') {
+      // 5 bips icônicos das luzes vermelhas de largada da F1 (● ● ● ● ●) antes do "Lights Out!"
+      for (let i = 0; i < 5; i++) {
+        this._playTone({
+          freq: 880,
+          type: 'square',
+          startTime: now + i * 0.15,
+          duration: 0.085,
+          gain: 0.075,
+          attack: 0.004,
+        });
+      }
+      // Motor V10 roncando no grid esperando as luzes apagarem
+      this._playTone({ freq: 210, endFreq: 420, type: 'sawtooth', startTime: now, duration: 0.78, gain: 0.06, attack: 0.05 });
+    }
+  }
 }
 
 export const soundEngine = new SoundEngine();

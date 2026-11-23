@@ -3,6 +3,7 @@ import { CARDS } from '../data/cards.js';
 import { RARITIES, TRADE_UP_RECIPES, VARIANTS } from '../data/rarities.js';
 import { formatCurrency } from '../utils/packEngine.js';
 import soundEngine from '../utils/soundEngine.js';
+import RarityRevealOverlay, { getRevealConfig } from './RarityRevealOverlay.jsx';
 import TcgCard from './TcgCard.jsx';
 
 const TradeUpModal = ({ collection, onExecuteTradeUp, onClose }) => {
@@ -65,11 +66,33 @@ const TradeUpModal = ({ collection, onExecuteTradeUp, onClose }) => {
 
         <div className="p-5 space-y-4">
           {resultPull ? (
-            <div className="flex flex-col items-center text-center py-4 animate-pop-in">
-              <span className="text-xs font-mono uppercase tracking-[0.25em] text-amber-300 mb-3">
+            <div className="flex flex-col items-center text-center py-8 animate-pop-in relative z-40">
+              <span className="text-xs font-mono uppercase tracking-[0.25em] text-amber-300 mb-4 relative z-40">
                 ✦ Fusão Concluída! ✦
               </span>
-              <TcgCard card={resultPull.card} variant={resultPull.variant} size="md" isNew />
+              <div className="relative z-40 animate-cr-impact">
+                {getRevealConfig(resultPull.card.raridade).hasCinematic && (
+                  <RarityRevealOverlay
+                    key={`${resultPull.instanceId}-back`}
+                    rarity={resultPull.card.raridade}
+                    variant={resultPull.variant}
+                    phase="burst"
+                    layer="back"
+                  />
+                )}
+                <div className="relative z-20">
+                  <TcgCard card={resultPull.card} variant={resultPull.variant} size="md" isNew />
+                </div>
+                {getRevealConfig(resultPull.card.raridade).hasCinematic && (
+                  <RarityRevealOverlay
+                    key={`${resultPull.instanceId}-front`}
+                    rarity={resultPull.card.raridade}
+                    variant={resultPull.variant}
+                    phase="burst"
+                    layer="front"
+                  />
+                )}
+              </div>
               <div className="mt-4 space-y-1">
                 <div className="font-display font-bold text-xl text-white">
                   {resultPull.card.marca} — {resultPull.card.tipo}

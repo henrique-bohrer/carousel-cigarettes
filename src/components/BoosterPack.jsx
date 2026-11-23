@@ -25,7 +25,7 @@ const BoosterPack = ({ pack, balance, onOpen, onShowOdds }) => {
         style={{
           transform: `perspective(1000px) rotateX(${tilt.rx}deg) rotateY(${tilt.ry}deg) translateY(${tilt.active ? '-6px' : '0px'})`,
         }}
-        className={`relative w-60 sm:w-64 h-[22rem] rounded-2xl overflow-hidden transition-transform duration-200 ease-out select-none border-2 ${pack.accentBorder} bg-gradient-to-b ${pack.gradient} shadow-[0_20px_45px_rgba(0,0,0,0.7)] ${
+        className={`relative w-60 xl:w-56 h-[22rem] rounded-2xl overflow-hidden transition-transform duration-200 ease-out select-none border-2 ${pack.accentBorder} bg-gradient-to-b ${pack.gradient} shadow-[0_20px_45px_rgba(0,0,0,0.7)] ${
           canAfford ? 'cursor-pointer' : 'cursor-not-allowed opacity-85'
         }`}
       >
@@ -91,7 +91,7 @@ const BoosterPack = ({ pack, balance, onOpen, onShowOdds }) => {
       </div>
 
       {/* Descrição & Ações abaixo do pacote */}
-      <div className="w-60 sm:w-64 mt-4 flex flex-col gap-2">
+      <div className="w-60 xl:w-56 mt-4 flex flex-col gap-2">
         <p className="text-xs text-slate-400 text-center min-h-[3rem] leading-relaxed">
           {pack.description}
         </p>

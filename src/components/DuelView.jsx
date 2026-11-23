@@ -37,8 +37,8 @@ const STAKES = [
 
 const STAT_META = [
   { key: 'velocidade', label: 'Velocidade', short: 'VEL', color: 'from-rose-500 to-orange-500' },
-  { key: 'manobra', label: 'Manobra', short: 'MAN', color: 'from-cyan-500 to-sky-500' },
-  { key: 'prestigio', label: 'Prestígio', short: 'PRS', color: 'from-amber-400 to-yellow-500' },
+  { key: 'aceleracao', label: '0–100 km/h', short: '0-100', color: 'from-cyan-500 to-sky-500' },
+  { key: 'aderencia', label: 'Aderência', short: 'ADER', color: 'from-emerald-400 to-amber-400' },
 ];
 
 const DuelView = ({ collection, balance, onDuelFinish, onGoToPacks }) => {
@@ -53,7 +53,7 @@ const DuelView = ({ collection, balance, onDuelFinish, onGoToPacks }) => {
         const card = cardMap.get(item.cardId);
         if (!card) return null;
         const stats = getEffectiveStats(card, item.variant, item.grade);
-        const power = stats.velocidade + stats.manobra + stats.prestigio;
+        const power = stats.velocidade + stats.aceleracao + stats.aderencia;
         return { ...item, card, stats, power };
       })
       .filter(Boolean)
@@ -251,7 +251,7 @@ const DuelView = ({ collection, balance, onDuelFinish, onGoToPacks }) => {
                     interactive={false}
                   />
                   <div className="text-[10px] font-mono text-slate-300">
-                    VEL {entry.stats.velocidade} • MAN {entry.stats.manobra} • PRS {entry.stats.prestigio}
+                    VEL {entry.stats.velocidade} • 0–100 {entry.stats.aceleracao} • ADER {entry.stats.aderencia}
                     {entry.stats.bonus > 0 && (
                       <span className="ml-1 text-amber-300 font-bold">(+{entry.stats.bonus})</span>
                     )}
@@ -422,7 +422,7 @@ const DuelView = ({ collection, balance, onDuelFinish, onGoToPacks }) => {
                 <span className="text-xs font-mono uppercase tracking-widest text-rose-300">
                   Oponente (CPU)
                 </span>
-                <div className="w-64 h-[23.5rem] rounded-2xl border-2 border-rose-500/50 bg-gradient-to-br from-slate-900 via-rose-950/60 to-slate-950 flex flex-col items-center justify-center p-6 shadow-2xl">
+                <div className="w-64 h-[25.5rem] rounded-2xl border-2 border-rose-500/50 bg-gradient-to-br from-slate-900 via-rose-950/60 to-slate-950 flex flex-col items-center justify-center p-6 shadow-2xl">
                   <div className="w-24 h-24 rounded-full border-2 border-rose-400/50 bg-rose-500/10 flex items-center justify-center text-4xl font-display font-black text-rose-300">
                     ?
                   </div>
@@ -465,7 +465,7 @@ const DuelView = ({ collection, balance, onDuelFinish, onGoToPacks }) => {
                     >
                       {entry.card.marca} ({VARIANTS[entry.variant].shortLabel}) •{' '}
                       <span className="font-mono text-amber-300">
-                        {entry.stats.velocidade}/{entry.stats.manobra}/{entry.stats.prestigio}
+                        {entry.stats.velocidade}/{entry.stats.aceleracao}/{entry.stats.aderencia}
                       </span>
                     </button>
                   );

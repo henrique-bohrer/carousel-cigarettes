@@ -14,17 +14,17 @@ export function calculateCardValue(card, variantId = 'normal', grade = null) {
 }
 
 /**
- * Calcula os atributos de pista de um carro com bônus de Foil, Full Art e PSA!
+ * Calcula os atributos de pista de um carro (Velocidade, 0–100 km/h e Aderência) com bônus de Foil, Full Art e PSA!
  */
 export function getEffectiveStats(card, variantId = 'normal', grade = null) {
-  if (!card) return { velocidade: 0, manobra: 0, prestigio: 0, bonus: 0 };
+  if (!card) return { velocidade: 0, aceleracao: 0, aderencia: 0, bonus: 0 };
   const variantBonus = VARIANTS[variantId]?.duelBonus || 0;
   const gradeBonus = grade && PSA_GRADES[grade] ? PSA_GRADES[grade].duelBonus : 0;
   const bonus = variantBonus + gradeBonus;
   return {
-    velocidade: card.stats.velocidade + bonus,
-    manobra: card.stats.manobra + bonus,
-    prestigio: card.stats.prestigio + bonus,
+    velocidade: (card.perf?.speedScore ?? card.stats.velocidade) + bonus,
+    aceleracao: (card.perf?.accelScore ?? card.stats.aceleracao) + bonus,
+    aderencia: (card.perf?.gripScore ?? card.stats.aderencia) + bonus,
     bonus,
   };
 }

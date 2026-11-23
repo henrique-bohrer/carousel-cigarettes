@@ -279,6 +279,15 @@ export const MISSIONS = [
     getProgress: (ctx) => ctx.mysticCount,
   },
   {
+    id: 'first-gt3-squad',
+    title: 'Piloto FIA GT3',
+    description: 'Colete pelo menos 3 carros da categoria Corrida GT3.',
+    target: 3,
+    rewardCash: 120,
+    rewardPoints: 50,
+    getProgress: (ctx) => ctx.gt3Count || 0,
+  },
+  {
     id: 'first-f1',
     title: 'Lenda do Paddock F1',
     description: 'Desbloqueie sua primeira carta F1 Histórica (♛ F1)!',

@@ -750,7 +750,7 @@ class EngineAudioController {
       }
 
       if (onTelemetry) {
-        const topSpeed = 240 + (card.stats?.velocidade || 80) * 1.4;
+        const topSpeed = card.perf?.topSpeedKmh || (240 + (card.stats?.velocidade || 80) * 1.4);
         const progress =
           ((gear - 1) + Math.max(0, (rpm - engine.idleRpm) / rpmSpan)) / engine.gears;
         onTelemetry({

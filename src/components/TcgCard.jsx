@@ -176,9 +176,66 @@ const TcgCard = ({
 
   const sizeClasses = {
     sm: 'w-44 h-[16.5rem]',
-    md: 'w-64 h-[23.5rem]',
-    lg: 'w-72 sm:w-80 h-[27rem] sm:h-[29.5rem]',
-  }[size] || 'w-64 h-[23.5rem]';
+    md: 'w-64 h-[25.5rem]',
+    lg: 'w-72 sm:w-80 h-[29rem] sm:h-[31rem]',
+  }[size] || 'w-64 h-[25.5rem]';
+
+  const renderPerformanceBars = (compact = false) => {
+    const perf = card.perf || {
+      topSpeedKmh: 260,
+      speedScore: card.stats?.velocidade || 70,
+      zeroToHundred: 4.5,
+      accelScore: card.stats?.aceleracao || 70,
+      gripScore: card.stats?.aderencia || 80,
+      lateralG: '1.0G',
+    };
+
+    const rows = [
+      {
+        label: 'VELOCIDADE',
+        realValue: `${perf.topSpeedKmh} km/h`,
+        score: perf.speedScore,
+        barClass: 'from-orange-400 via-rose-500 to-red-500',
+        valClass: 'text-orange-300',
+      },
+      {
+        label: '0–100 KM/H',
+        realValue: `${perf.zeroToHundred.toFixed(1)}s`,
+        score: perf.accelScore,
+        barClass: 'from-cyan-400 via-sky-400 to-indigo-400',
+        valClass: 'text-cyan-300',
+      },
+      {
+        label: 'ADERÊNCIA',
+        realValue: perf.lateralG,
+        score: perf.gripScore,
+        barClass: 'from-emerald-400 via-lime-400 to-amber-300',
+        valClass: 'text-emerald-300',
+      },
+    ];
+
+    return (
+      <div className={compact ? 'space-y-1.5 mt-2' : 'space-y-1.5'}>
+        {rows.map((row) => (
+          <div key={row.label} className="space-y-0.5">
+            <div className="flex items-center justify-between text-[8.5px] font-mono leading-none">
+              <span className="text-slate-400 font-semibold tracking-wider">{row.label}</span>
+              <span className="flex items-center gap-1.5">
+                <span className={`font-bold ${row.valClass}`}>{row.realValue}</span>
+                <span className="text-slate-500">({row.score}/100)</span>
+              </span>
+            </div>
+            <div className="h-1.5 w-full rounded-full bg-slate-900/90 border border-white/10 overflow-hidden">
+              <div
+                className={`h-full rounded-full bg-gradient-to-r ${row.barClass}`}
+                style={{ width: `${Math.max(4, Math.min(100, row.score))}%` }}
+              />
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  };
 
   const handleMouseMove = (e) => {
     if (!interactive || !cardRef.current) return;
@@ -311,21 +368,8 @@ const TcgCard = ({
 
             {size !== 'sm' && (
               <>
-                <div className="grid grid-cols-3 gap-1.5 mt-2 text-[9px] font-mono">
-                  <div className="bg-black/40 rounded px-1.5 py-1 text-center border border-white/10">
-                    <div className="text-slate-400">VEL</div>
-                    <div className="text-white font-bold">{card.stats.velocidade}</div>
-                  </div>
-                  <div className="bg-black/40 rounded px-1.5 py-1 text-center border border-white/10">
-                    <div className="text-slate-400">MAN</div>
-                    <div className="text-white font-bold">{card.stats.manobra}</div>
-                  </div>
-                  <div className="bg-black/40 rounded px-1.5 py-1 text-center border border-white/10">
-                    <div className="text-slate-400">PRS</div>
-                    <div className="text-amber-300 font-bold">{card.stats.prestigio}</div>
-                  </div>
-                </div>
-                <div className="flex items-center justify-between mt-1.5 text-[9px] text-slate-300/80">
+                {renderPerformanceBars(true)}
+                <div className="flex items-center justify-between mt-2 text-[9px] text-slate-300/80">
                   <span>{card.origem}</span>
                   <span className="text-amber-300 font-mono">3.8× Valor Base</span>
                 </div>
@@ -451,22 +495,11 @@ const TcgCard = ({
           </span>
         </div>
 
-        {/* Atributos & Flavor Text (oculto no tamanho sm para ficar limpo) */}
+        {/* Atributos de Performance 0–100 & Flavor Text */}
         {size !== 'sm' && (
           <div className="mt-auto pt-2 space-y-1.5">
-            <div className="grid grid-cols-3 gap-1 text-[9px] font-mono">
-              <div className="bg-slate-950/60 border border-white/10 rounded-md px-1.5 py-1 flex items-center justify-between">
-                <span className="text-slate-400">VEL</span>
-                <span className="text-slate-100 font-bold">{card.stats.velocidade}</span>
-              </div>
-              <div className="bg-slate-950/60 border border-white/10 rounded-md px-1.5 py-1 flex items-center justify-between">
-                <span className="text-slate-400">MAN</span>
-                <span className="text-slate-100 font-bold">{card.stats.manobra}</span>
-              </div>
-              <div className="bg-slate-950/60 border border-white/10 rounded-md px-1.5 py-1 flex items-center justify-between">
-                <span className="text-slate-400">PRS</span>
-                <span className="text-amber-300 font-bold">{card.stats.prestigio}</span>
-              </div>
+            <div className="bg-slate-950/60 border border-white/10 rounded-xl p-2">
+              {renderPerformanceBars(false)}
             </div>
 
             {size === 'lg' && (

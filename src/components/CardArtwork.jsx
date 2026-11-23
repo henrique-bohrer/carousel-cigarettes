@@ -107,6 +107,48 @@ function CarSilhouette({ bodyType, livery, isF1 }) {
     );
   }
 
+  if (bodyType === 'gt3') {
+    // Carro de corrida FIA GT3: asa traseira pescoço-de-cisne alta, splitter frontal, difusor e gaiola
+    return (
+      <svg viewBox="0 0 260 115" className="w-full h-auto drop-shadow-[0_14px_22px_rgba(0,0,0,0.85)]" fill="none">
+        <ellipse cx="132" cy="96" rx="108" ry="8" fill="rgba(0,0,0,0.68)" />
+        {/* Asa traseira swan-neck FIA GT3 */}
+        <path d="M18 32 L54 34 L52 41 L20 40 Z" fill={stripe} stroke="rgba(255,255,255,0.35)" strokeWidth="1" />
+        <path d="M36 40 L42 54" stroke="#0f172a" strokeWidth="3.5" strokeLinecap="round" />
+        {/* Carroceria widebody GT3 */}
+        <path
+          d="M28 60 L50 52 L92 37 L154 37 L192 52 L240 60 L246 77 L28 77 Z"
+          fill={body}
+          stroke="rgba(255,255,255,0.3)"
+          strokeWidth="1.2"
+        />
+        {/* Gaiola de proteção (Roll Cage) visível no vidro */}
+        <path d="M96 41 L150 41 L178 53 L86 53 Z" fill="#090d16" stroke="rgba(255,255,255,0.22)" strokeWidth="1" />
+        <line x1="112" y1="42" x2="128" y2="53" stroke={stripe} strokeWidth="1.8" strokeOpacity="0.8" />
+        {/* Faixa de equipe GT3 */}
+        <path d="M36 63 L234 63 L232 69 L34 69 Z" fill={stripe} fillOpacity="0.92" />
+        {/* Splitter dianteiro + Canards + Difusor traseiro */}
+        <rect x="218" y="75" width="32" height="4" rx="1.5" fill="#09090b" stroke={stripe} strokeWidth="0.9" />
+        <rect x="24" y="74" width="22" height="5" rx="1.5" fill="#09090b" />
+        {/* Farol endurance amarelo + lanterna LED */}
+        <rect x="220" y="60" width="14" height="5" rx="2" fill="#facc15" />
+        <rect x="28" y="60" width="10" height="4.5" rx="1.5" fill="#ef4444" />
+        {/* Placa de número lateral */}
+        <rect x="122" y="57" width="24" height="14" rx="2.5" fill="#ffffff" fillOpacity="0.92" />
+        <text x="134" y="67.5" fill="#090d16" fontSize="9.5" fontWeight="900" fontFamily="monospace" textAnchor="middle">
+          {number}
+        </text>
+        {/* Rodas slick GT3 */}
+        <circle cx="68" cy="77" r="17" fill="#09090b" stroke="#27272a" strokeWidth="3" />
+        <circle cx="68" cy="77" r="10.5" fill={rim} stroke={stripe} strokeWidth="1.8" />
+        <circle cx="68" cy="77" r="3.5" fill="#09090b" />
+        <circle cx="198" cy="77" r="17" fill="#09090b" stroke="#27272a" strokeWidth="3" />
+        <circle cx="198" cy="77" r="10.5" fill={rim} stroke={stripe} strokeWidth="1.8" />
+        <circle cx="198" cy="77" r="3.5" fill="#09090b" />
+      </svg>
+    );
+  }
+
   if (bodyType === 'jdm') {
     return (
       <svg viewBox="0 0 260 115" className="w-full h-auto drop-shadow-[0_14px_22px_rgba(0,0,0,0.85)]" fill="none">
